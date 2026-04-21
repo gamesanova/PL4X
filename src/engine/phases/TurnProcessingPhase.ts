@@ -1,0 +1,88 @@
+import { GameEngineAction, GameEngineEffect } from '@engine';
+import { PlayerModel } from '@engine/models';
+import { ManagerRegistry } from '@engine/managers';
+import { SystemRegistry } from '@engine/systems';
+
+export class TurnProcessingPhase {
+  /**
+   * Routes incoming actions to the appropriate handler. Currently only
+   * processes TURN_NEXT_PLAYER, which advances the player sequence.
+   */
+  handle(managers: ManagerRegistry, systems: SystemRegistry, action: GameEngineAction): GameEngineEffect[] {
+    switch (action.type) {
+      case 'TURN_NEXT_PLAYER': return this.#handleNextPlayer(managers, systems);
+      default: return [];
+    }
+  }
+
+  /**
+   * Advances to the next player in the sequence and delegates to the human
+   * handler. Non-human players are skipped by chaining TURN_NEXT_PLAYER via
+   * DISPATCH until the next human is reached.
+   *
+   * If there is more than one human then some kind of starting player
+   * logic may be needed to track for the incrementTurn, however for now
+   * it's kept simple and just updated on the human turn automatically.
+   */
+  #handleNextPlayer(managers: ManagerRegistry, systems: SystemRegistry): GameEngineEffect[] {
+    managers.session.incrementPlayer();
+
+    const player = managers.session.getCurrentPlayer();
+
+    if (!player) { return []; }
+
+    for (const unit of managers.entity.getUnits(player.id)) {
+      unit.resetAp();
+      unit.resetAttacks();
+    }
+
+    if (player.type === 'BOT') return this.#handleBot(managers, systems, player);
+
+    if (player.type === 'HUMAN') {
+      const turn = managers.session.incrementTurn();
+
+      return [
+        ...this.#handleHuman(managers, systems, player),
+        { type: 'TURN_UPDATED', turn },
+        { type: 'TURN_COMPLETED' },
+      ];
+    }
+
+    return [{ type: 'DISPATCH', action: { type: 'TURN_NEXT_PLAYER' } }];
+  }
+
+  /**
+   * Processes a bot player's turn. Bot logic is not yet implemented; for now
+   * the turn is skipped by chaining TURN_NEXT_PLAYER via DISPATCH.
+   */
+  #handleBot(managers: ManagerRegistry, systems: SystemRegistry, player: PlayerModel): GameEngineEffect[] {
+    const effects: GameEngineEffect[] = systems.bot.processTurn(managers, player);
+
+    if (systems.session.isGameOver(managers)) {
+      effects.push({ type: 'GAME_OVER' });
+    }
+
+    effects.push({ type: 'DISPATCH', action: { type: 'TURN_NEXT_PLAYER' } });
+
+    return effects;
+  }
+
+  /**
+   * Processes a human player's turn, transitions to IDLE and runs HumanSystem
+   * to produce resource effects.
+   */
+  #handleHuman(managers: ManagerRegistry, systems: SystemRegistry, player: PlayerModel): GameEngineEffect[] {
+    // NOTE: May need to put this into a separate dispatch at some point
+    //       but for now we're just running a few update/regen commands
+    //       that don't need any await so it should all run fast enough.
+    managers.session.setPhase('IDLE');
+
+    const actionableTiles = systems.entityCommand.getActionableTiles(managers, player);
+
+    return [
+      ...systems.human.processTurn(managers, player),
+      { type: 'HIGHLIGHT_TILES', highlight: 'COMMAND_AVAILABLE', tiles: actionableTiles },
+      { type: 'DISPATCH', action: { type: 'ENTITY_AUTO_SELECT' } },
+    ];
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@constants": ["./src/constants"],
+      "@engine": ["./src/engine"],
+      "@engine/initializers": ["./src/engine/initializers"],
+      "@engine/managers": ["./src/engine/managers"],
+      "@engine/maps": ["./src/engine/maps"],
+      "@engine/models": ["./src/engine/models"],
+      "@engine/phases": ["./src/engine/phases"],
+      "@engine/systems": ["./src/engine/systems"],
+      "@scenes": ["./src/scenes"],
+      "@ui/components": ["./src/ui/components"],
+      "@ui/ghosts": ["./src/ui/ghosts"],
+      "@ui/objects": ["./src/ui/objects"],
+      "@ui/systems": ["./src/ui/systems"],
+      "@ui/views": ["./src/ui/views"],
+      "@utils": ["./src/utils"],
+    }
+  },
+  "include": ["src"]
+}

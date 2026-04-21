@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>(╯°□°）╯︵ ┻━┻</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            overflow-y: hidden;
+        }
+
+        #app {
+            position: relative;
+            /*width: 1000px;*/
+            overflow-y: hidden;
+        }
+
+        #app canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="app"></div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
