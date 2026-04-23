@@ -20,6 +20,7 @@
 - No ellipsis character - use three dots (...)
 - No Unicode bullets - use hyphens (-) or asterisks (*)
 - No non-breaking spaces
+- Doc block prose must be written as full sentences. Never use a hyphen to join, separate, or connect clauses or thoughts within a sentence.
 
 ## Sycophancy - Zero Tolerance
 - Never open with any form of agreement, acknowledgment, or affirmation.
