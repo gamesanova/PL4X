@@ -51,7 +51,7 @@
 - Always use 2 spaces for indenting, not 4.
 - Do not delete comments.
 - Doc blocks must always use multi-line `/** */` format — never single-line above any function, variable, or type.
-- Doc block prose must read as plain sentences. No dashes of any kind (em, en, or double hyphen) as punctuation.
+- Doc block prose must read as plain sentences. No em dashes, en dashes, or double hyphens as punctuation. The `@param name - description` hyphen separator is allowed.
 - Never reformat, reindent, or rearrange existing code that is not directly related to the change being made.
 - Never align variable assignments or object properties with extra spaces. One space on each side of `=` and `:`.
 

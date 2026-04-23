@@ -1,11 +1,13 @@
 import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+import jsdoc from "eslint-plugin-jsdoc";
 
 export default tseslint.config(
   { ignores: ["dist"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  jsdoc.configs['flat/recommended-typescript'],
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
@@ -27,6 +29,8 @@ export default tseslint.config(
       "space-infix-ops": ["error"],
       "eol-last": ["error", "always"],
       "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      "jsdoc/multiline-blocks": ["error", { "noSingleLineBlocks": true }],
+      "jsdoc/require-hyphen-before-param-description": ["error", "always"],
     },
   },
 );
