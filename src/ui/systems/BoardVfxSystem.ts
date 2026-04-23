@@ -75,6 +75,8 @@ export class BoardVfxSystem {
    * Plays a one-shot effect or attaches a persistent effect for the given
    * BoardVfx event. One-shot effects return a promise that resolves on
    * completion. Persistent effects (DAZED, BURNING) return immediately.
+   * @param effect - The board VFX event to play.
+   * @returns A promise that resolves when the effect completes.
    */
   async add(effect: BoardVfx): Promise<void> {
     switch (effect.type) {
@@ -91,6 +93,8 @@ export class BoardVfxSystem {
   /**
    * Stops and destroys a persistent effect on the given entity.
    * No-ops if the effect is not currently active on that entity.
+   * @param effect - The persistent board VFX event to remove.
+   * @returns A promise that resolves when removal is complete.
    */
   async remove(effect: BoardVfx): Promise<void> {
     switch (effect.type) {
@@ -103,6 +107,8 @@ export class BoardVfxSystem {
    * Enqueues a floating text notification above the entity. If no queue exists
    * for the entity the item is added and the drain starts immediately. Otherwise
    * it is appended and the active drain picks it up in turn.
+   * @param entity - The entity to display the notification above.
+   * @param notifyInfo - The label text and notification type.
    */
   #notify(entity: EntityObject, notifyInfo: VfxNotifyInfo): void {
     const queue = this.#notifyQueue.get(entity);
@@ -117,8 +123,9 @@ export class BoardVfxSystem {
 
   /**
    * Shifts the next item off the entity's queue and renders it as a floating
-   * text. Schedules itself again after 350ms if more items remain, otherwise
+   * text. Schedules itself again after a delay if more items remain, otherwise
    * removes the queue entry.
+   * @param entity - The entity whose notification queue to drain.
    */
   #notifyQueueDrain(entity: EntityObject): void {
     const queue = this.#notifyQueue.get(entity);
@@ -145,6 +152,7 @@ export class BoardVfxSystem {
   /**
    * Drops all pending notifications for the entity. Called on death to prevent
    * floating text firing after the entity has been removed.
+   * @param entity - The entity whose notification queue to clear.
    */
   #notifyQueueClear(entity: EntityObject): void {
     this.#notifyQueue.delete(entity);
@@ -153,6 +161,10 @@ export class BoardVfxSystem {
   /**
    * Routes to the appropriate attack animation based on damage type and range.
    * Falls back to a no-op promise for unimplemented combinations.
+   * @param attacker - The attacking entity object.
+   * @param target - The target entity object.
+   * @param attackInfo - Weapon and damage type metadata for the attack.
+   * @returns A promise that resolves when the animation completes.
    */
   #onceAttack(attacker: EntityObject, target: EntityObject, attackInfo: VfxAttackInfo): Promise<void> {
     switch (attackInfo.weaponType) {
@@ -212,35 +224,10 @@ export class BoardVfxSystem {
   }
 
   /**
-   * Plays a non-blocking expanding ring at the target position to indicate AoE
-   * splash radius. The ring starts at scale 0 and expands to aoe * tile width,
-   * fading out simultaneously over the configured duration.
-   */
-  #onceAttackAoe(target: EntityObject, attackInfo: VfxAttackInfo): void {
-    const radius = (attackInfo.aoe ?? 1) * ASSETS.TERRAIN.WIDTH;
-    const cfg = UI_VARIANTS.VFX_ATTACK.AOE;
-
-    const ring = this.#scene.add.graphics();
-    ring.lineStyle(3, UI_VARIANTS.VFX_COLORS[attackInfo.damageType], 1);
-    ring.strokeCircle(0, 0, radius);
-    ring.setPosition(target.x, target.y);
-    ring.setScale(0);
-    ring.setDepth(15);
-
-    this.#scene.tweens.add({
-      targets: ring,
-      scale: 1,
-      alpha: 0.5,
-      duration: cfg.duration,
-      ease: 'Sine.easeOut',
-      onComplete: () => ring.destroy(),
-    });
-  }
-
-  /**
    * Plays the death animation — emits a pixel particle burst at the target's
    * position then fades the target to alpha 0 over the configured duration.
    * Destroys the particle emitter on completion.
+   * @param target - The entity object to animate and remove.
    */
   #onceDeath(target: EntityObject): Promise<void> {
     this.#notifyQueueClear(target);
@@ -273,6 +260,10 @@ export class BoardVfxSystem {
    * Tweens the target to the given world position. Uses the default move duration
    * but accepts an override for cases where a unit travels across multiple tiles
    * and each step needs a proportionally shorter duration. Resolves when the tween completes.
+   * @param target - The entity object to tween.
+   * @param x - World x coordinate of the destination.
+   * @param y - World y coordinate of the destination.
+   * @param duration - Optional tween duration override in milliseconds.
    */
   #onceMove(target: EntityObject, x: number, y: number, duration?: number): Promise<void> {
     return new Promise(resolve => {
@@ -290,6 +281,7 @@ export class BoardVfxSystem {
   /**
    * Fades the target in from alpha 0 to 1 over the configured spawn duration.
    * Resolves when the tween completes.
+   * @param target - The entity object to fade in.
    */
   #onceSpawn(target: EntityObject): Promise<void> {
     target.setAlpha(0);
@@ -307,6 +299,7 @@ export class BoardVfxSystem {
   /**
    * Attaches three star particle emitters above the entity to indicate a dazed
    * state. No-ops if the entity already has an active dazed effect.
+   * @param entity - The entity object to attach the dazed emitters to.
    */
   #addDazed(entity: EntityObject): void {
     if (this.#dazed.has(entity)) return;
@@ -335,6 +328,7 @@ export class BoardVfxSystem {
   /**
    * Attaches five burning particle emitters across the entity to simulate a
    * spreading fire. No-ops if the entity already has an active burning effect.
+   * @param entity - The entity object to attach the burning emitters to.
    */
   #addBurning(entity: EntityObject): void {
     if (this.#burning.has(entity)) return;
@@ -363,6 +357,7 @@ export class BoardVfxSystem {
   /**
    * Destroys all dazed emitters on the given entity and removes it from
    * the dazed tracking map.
+   * @param entity - The entity object whose dazed emitters to destroy.
    */
   #removeDazed(entity: EntityObject): void {
     const emitters = this.#dazed.get(entity);
@@ -375,6 +370,7 @@ export class BoardVfxSystem {
   /**
    * Destroys all burning emitters on the given entity and removes it from
    * the burning tracking map.
+   * @param entity - The entity object whose burning emitters to destroy.
    */
   #removeBurning(entity: EntityObject): void {
     const emitters = this.#burning.get(entity);

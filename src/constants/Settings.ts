@@ -1,4 +1,4 @@
-import { BALANCE, I18N } from '@constants';
+import { I18N } from '@constants';
 import { UI } from './Ui';
 
 /**

@@ -33,6 +33,7 @@ export class BoardHighlightSystem {
    * Reconciles the current highlighted set against an incoming set. Tiles only
    * in the new set are highlighted (if priority permits); tiles only in the
    * current set are removed (with fallback to lower-priority types if present).
+   * @param highlights - The incoming highlight type and tile set to reconcile against.
    */
   diffHighlights(highlights: BoardHighlights): void {
     const current  = this.#tiles.get(highlights.type)!;
@@ -66,6 +67,7 @@ export class BoardHighlightSystem {
   /**
    * Removes the highlight type from all its tiles, reverting each to the next
    * active type if one exists, or fully unsetting the highlight if not.
+   * @param type - The highlight type to remove.
    */
   removeHighlights(type: BoardHighlightType): void {
     this.#tiles.get(type)?.forEach(tile => {
@@ -81,6 +83,8 @@ export class BoardHighlightSystem {
    * Switches a tile away from the given type. Finds the next highest-priority
    * type still covering this tile and calls setHighlight for it, or calls
    * unsetHighlight if nothing else is covering it.
+   * @param tile - The terrain object to revert.
+   * @param fromType - The highlight type being removed.
    */
   #revert(tile: TerrainObject, fromType: BoardHighlightType): void {
     const fallback = PRIORITY.find(t => t !== fromType && this.#tiles.get(t)?.has(tile));

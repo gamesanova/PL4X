@@ -37,6 +37,10 @@ export class BoardPathSystem {
    * If the same entity is already active, only updates the distance. Otherwise
    * destroys any existing pathfinder and creates a new one anchored to the
    * entity's board object.
+   * @param entity - The entity to activate pathfinding for.
+   * @param chess - The entity's board object, or null if not on the board.
+   * @param distance - The maximum AP the entity can spend on movement.
+   * @param objectAt - Callback to check tile occupancy during pathfinding.
    */
   activate(entity: EntityModel, chess: EntityObject | null, distance: number, objectAt: (x: number, y: number) => EntityObject | null): void {
     this.#pathFinderDistance = distance;
@@ -69,6 +73,7 @@ export class BoardPathSystem {
 
   /**
    * Returns true if a pathfinder is currently active.
+   * @returns True if the pathfinder has been initialized.
    */
   isActive(): boolean {
     return this.#pathFinder !== null;
@@ -77,6 +82,9 @@ export class BoardPathSystem {
   /**
    * Called on tile hover. Updates the ghost and path display based on whether
    * the hovered tile is occupied or reachable. No-ops if no pathfinder is active.
+   * @param terrain - The hovered terrain object.
+   * @param chess - The entity object on the hovered tile, or null if unoccupied.
+   * @param terrainAt - Callback to look up terrain objects by tile coordinate.
    */
   update(terrain: TerrainObject, chess: EntityObject | null, terrainAt: (x: number, y: number) => TerrainObject | null): void {
     if (!this.isActive()) { return; }
@@ -99,6 +107,7 @@ export class BoardPathSystem {
 
   /**
    * Marks the path as in motion so pointer events are suppressed during move animation.
+   * @param value - True while the move animation is playing.
    */
   setMoving(value: boolean): void {
     this.#pathFinderIsMoving = value;
@@ -107,6 +116,8 @@ export class BoardPathSystem {
   /**
    * Highlights each tile in the path and sets step number labels. Clears all
    * previous labels before rewriting from scratch so step numbers are always correct.
+   * @param path - The ordered list of tile coordinates forming the path.
+   * @param terrainAt - Callback to look up terrain objects by tile coordinate.
    */
   #showPath(path: { x: number; y: number }[], terrainAt: (x: number, y: number) => TerrainObject | null): void {
     this.#clearLabels();

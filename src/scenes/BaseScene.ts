@@ -12,8 +12,11 @@ export class BaseScene extends Phaser.Scene {
   }
 
   /**
-   * The scene will destroy/shutdown but Phaser reuses the instance hence there is no
-   * event clean up. This helper will be used to keep event register and clean up easier.
+   * Registers a scene event listener and tracks it for automatic cleanup on shutdown.
+   * Phaser reuses scene instances, so listeners must be manually removed to avoid
+   * duplicates across scene restarts.
+   * @param event - The event name to listen for.
+   * @param fn - The listener function.
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected on(event: string, fn: (...args: any[]) => void) {

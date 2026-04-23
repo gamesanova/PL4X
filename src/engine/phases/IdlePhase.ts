@@ -16,6 +16,9 @@ export class IdlePhase {
   /**
    * Auto-selects the first actionable unit for the current player. Called at
    * turn start via DISPATCH from HumanSystem. No-ops if no actionable units exist.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @returns The resulting effects.
    */
   #handleEntityAutoSelect(managers: ManagerRegistry, systems: SystemRegistry): GameEngineEffect[] {
     if (managers.session.getTurn() <= 1) return [];
@@ -35,6 +38,11 @@ export class IdlePhase {
    * highlight and entity selected effect, then transitions to ENTITY_COMMAND if
    * the entity belongs to the current player and has an action available,
    * otherwise to ENTITY_SELECT.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @param x - Tile x coordinate of the click.
+   * @param y - Tile y coordinate of the click.
+   * @returns The resulting effects.
    */
   #handlePointerLeftDown(managers: ManagerRegistry, systems: SystemRegistry, x: number, y: number): GameEngineEffect[] {
     const entity = managers.entity.getEntityAt(x, y);
@@ -81,6 +89,8 @@ export class IdlePhase {
    * Advances to the next player's turn. HIGHLIGHT_SPAWN with an empty set is
    * picked up by diffHighlights on the view side to clear any existing spawn
    * highlights.
+   * @param managers - The manager registry.
+   * @returns The resulting effects.
    */
   #handleTurnEnd(managers: ManagerRegistry): GameEngineEffect[] {
     managers.session.setPhase('TURN_PROCESSING');

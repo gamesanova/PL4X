@@ -36,7 +36,7 @@ export class ButtonGroup {
 
       this.#buttons[key].on('pointerup', () => {
         if (this.#buttons[key].isUnavailable) {
-          this.clearValue()
+          this.clearValue();
           config.onUnavailable?.(key);
         } else {
           config.onSelect(key);

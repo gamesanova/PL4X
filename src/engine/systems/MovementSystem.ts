@@ -14,6 +14,11 @@ export class MovementSystem {
   /**
    * Moves the entity to the given tile, spends the given AP cost, and returns
    * the ENTITY_MOVED effect.
+   * @param managers - The manager registry.
+   * @param entity - The entity to move.
+   * @param target - The destination tile.
+   * @param ap - The AP cost to spend.
+   * @returns The ENTITY_MOVED effect.
    */
   executeMove(managers: ManagerRegistry, entity: EntityModel, target: TileData, ap: number): GameEngineEffect {
     const from = { x: entity.tileX, y: entity.tileY };
@@ -28,6 +33,11 @@ export class MovementSystem {
    * Returns the AP cost to reach the target tile via BFS, or -1 if unreachable
    * within the given AP budget. Each step costs BALANCE.AP.COST.MOVEMENT.
    * Occupied tiles are not traversed.
+   * @param managers - The manager registry.
+   * @param entity - The entity attempting to move.
+   * @param target - The destination tile.
+   * @param ap - The AP budget available for movement.
+   * @returns The AP cost to reach the target, or -1 if unreachable.
    */
   getMoveCost(managers: ManagerRegistry, entity: EntityModel, target: TileData, ap: number): number {
     const start = managers.map.getTileAt(entity.tileX, entity.tileY);
@@ -57,6 +67,9 @@ export class MovementSystem {
   /**
    * Returns a random unoccupied neighbor tile, or null if all neighbors are
    * blocked. Used by BotSystem for undirected random movement.
+   * @param managers - The manager registry.
+   * @param entity - The entity to find a random move for.
+   * @returns A random unoccupied neighbor tile, or null.
    */
   getRandomMoveTarget(managers: ManagerRegistry, entity: EntityModel): TileData | null {
     const tile = managers.map.getTileAt(entity.tileX, entity.tileY);
@@ -71,6 +84,12 @@ export class MovementSystem {
    * the given target position, or null if all neighbors are blocked. Picks
    * randomly among the 3 closest neighbors to add variance, falling back to
    * remaining neighbors if those are all occupied.
+   * @param managers - The manager registry.
+   * @param entity - The entity to move.
+   * @param toward - Target position to move toward.
+   * @param toward.x - X coordinate of the target.
+   * @param toward.y - Y coordinate of the target.
+   * @returns The best available neighbor tile, or null.
    */
   getMoveTarget(managers: ManagerRegistry, entity: EntityModel, toward: { x: number; y: number }): TileData | null {
     const tile = managers.map.getTileAt(entity.tileX, entity.tileY);

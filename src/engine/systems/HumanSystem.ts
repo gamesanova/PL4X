@@ -16,7 +16,11 @@ export class HumanSystem {
   }
 
   /**
-   * Processes the human player turn. Handles dazed, regen and AP logic.
+   * Processes the human player turn. Decrements daze counters, removes the dazed
+   * status when it clears, and applies health regen to undazed units below max health.
+   * @param managers - The manager registry.
+   * @param player - The human player whose turn is being processed.
+   * @returns All entity state effects produced this turn.
    */
   processTurn(managers: ManagerRegistry, player: PlayerModel): GameEngineEffect[] {
     const effects: GameEngineEffect[] = [];

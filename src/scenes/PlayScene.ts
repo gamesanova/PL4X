@@ -27,6 +27,7 @@ export class PlayScene extends BaseScene {
    * to resolve. TURN_END starts the full turn cycle from player index 0 because
    * SessionManager sets currentPlayerId to the last player on init, causing
    * incrementPlayer to wrap around to index 0 on the first TURN_NEXT_PLAYER.
+   * @param action - The init action specifying NEW or LOAD.
    */
   create(action: GameEngineInitAction) {
     new BgView(this);
@@ -73,11 +74,10 @@ export class PlayScene extends BaseScene {
   }
 
   /**
-   * Dispatches an action to the engine and processes returned effects in a
-   * controlled sequence. Effects are first bucketed by type into bundles, then
-   * fired in explicit order below. Sync effects fire and forget. Async effects
-   * (moves, combat) are awaited via Promise.all so all instances of a type run
-   * in parallel before the next group starts.
+   * Dispatches an action to the engine and processes returned effects in sequence.
+   * Terminates immediately on GAME_OVER or GAME_WIN. All other effects are routed
+   * through #handleEffect one at a time, awaiting async effects before continuing.
+   * @param action - The action to dispatch.
    */
   async #dispatch(action: GameEngineAction) {
     const effects = this.#gameEngine.dispatch(action);
@@ -95,6 +95,8 @@ export class PlayScene extends BaseScene {
   /**
    * Routes a single engine effect to the appropriate view method. Returns a
    * promise for async effects (animations) or void for sync ones.
+   * @param fx - The effect to handle.
+   * @returns A promise for async effects, or void for sync ones.
    */
   #handleEffect(fx: GameEngineEffect): Promise<void> | void {
     switch (fx.type) {

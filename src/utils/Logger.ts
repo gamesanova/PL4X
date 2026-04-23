@@ -17,6 +17,11 @@
 const debug = import.meta.env.VITE_DEBUG as string | undefined;
 const debugLevel = new Set<string>((debug || '').split(',').map(t => t.trim().toLowerCase()));
 
+/**
+ * Returns true if the given type or category is enabled via VITE_LOG.
+ * @param type - The log type or category to check.
+ * @returns True if logging is enabled for that type.
+ */
 function isEnabled(type: string): boolean {
   if (debugLevel.has('all')) {
     return true;

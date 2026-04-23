@@ -17,7 +17,7 @@ export class HoverGhost extends BaseGhost {
     super(scene, 0, 0);
     this.#styles = styles;
 
-    this.#draw()
+    this.#draw();
   }
 
   /**

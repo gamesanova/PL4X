@@ -36,6 +36,7 @@ export class GameBoardView {
 
   /**
    * Draws the board, populates initial entities, and wires up pointer listeners.
+   * @param gameEngineInitData - Tile grid, entity list, and board dimensions from engine init.
    */
   init(gameEngineInitData: GameEngineInitData) {
     this.#drawBoard(gameEngineInitData.tiles, gameEngineInitData.width, gameEngineInitData.height);
@@ -57,6 +58,9 @@ export class GameBoardView {
 
   /**
    * Creates the rexBoard hex grid and populates it with TerrainObject tiles.
+   * @param tiles - 2D tile grid from the engine.
+   * @param width - Board width in tiles.
+   * @param height - Board height in tiles.
    */
   #drawBoard(tiles: (TileData | null)[][], width: number, height: number) {
     this.#rexBoard = this.#scene.rexBoard.add.board({
@@ -85,6 +89,7 @@ export class GameBoardView {
 
   /**
    * Renders all entities present at game start.
+   * @param entities - The initial entity list from engine init.
    */
   #drawEntities(entities: EntityModel[]) {
     for (const entity of entities) {
@@ -166,6 +171,7 @@ export class GameBoardView {
 
   /**
    * Emits a POINTER_LEFT_DOWN event with the tile coordinates.
+   * @param terrain - The terrain object that was clicked.
    */
   #onTileLeftDown(terrain: TerrainObject) {
     if (this.#path.isMoving) return;
@@ -174,6 +180,7 @@ export class GameBoardView {
 
   /**
    * Emits a POINTER_RIGHT_DOWN event with the tile coordinates.
+   * @param terrain - The terrain object that was right-clicked.
    */
   #onTileRightDown(terrain: TerrainObject) {
     if (this.#path.isMoving) return;
@@ -183,6 +190,7 @@ export class GameBoardView {
   /**
    * Moves the ghost to the hovered tile and updates the path display if a
    * pathfinder is active.
+   * @param terrain - The terrain object the pointer entered.
    */
   #onTileOver(terrain: TerrainObject) {
     this.#ghost.move(terrain);
@@ -191,6 +199,7 @@ export class GameBoardView {
 
   /**
    * Fires on tile exit. Reserved for future per-tile hover-out logic.
+   * @param _terrain - The terrain object the pointer exited.
    */
   #onTileOut(_terrain: TerrainObject) {
     //
@@ -198,6 +207,7 @@ export class GameBoardView {
 
   /**
    * Marks the pointer as on the board and shows the ghost if no pathfinder is active.
+   * @param _terrain - The first terrain tile entered when the pointer moved onto the board.
    */
   #onBoardOver(_terrain: TerrainObject) {
     this.#isPointerOnBoard = true;
@@ -206,6 +216,7 @@ export class GameBoardView {
 
   /**
    * Marks the pointer as off the board, hides the ghost, and clears any active path.
+   * @param _terrain - The last terrain tile exited when the pointer left the board.
    */
   #onBoardOut(_terrain: TerrainObject) {
     this.#isPointerOnBoard = false;
@@ -216,6 +227,9 @@ export class GameBoardView {
   /**
    * Returns the EntityObject chess piece at the given tile position, or null if
    * nothing is there. All entities share the unit layer for chess lookups.
+   * @param x - Tile x coordinate.
+   * @param y - Tile y coordinate.
+   * @returns The EntityObject at that tile, or null if none.
    */
   #getObjectAt(x: number, y: number): EntityObject | null {
     return this.#rexBoard.tileXYZToChess(x, y, ASSETS.UNIT.LAYER) ?? null;
@@ -225,6 +239,9 @@ export class GameBoardView {
    * Returns the TerrainObject at the given tile coordinates, or null for
    * off-board positions. Used as the primary existence check before handling
    * any tile event, since some positions on the hex grid are intentionally empty.
+   * @param x - Tile x coordinate.
+   * @param y - Tile y coordinate.
+   * @returns The TerrainObject at that tile, or null if off-board.
    */
   #getTerrainAt(x: number, y: number): TerrainObject {
     return this.#rexBoard.tileXYZToChess(x, y, ASSETS.TERRAIN.LAYER);
@@ -232,6 +249,8 @@ export class GameBoardView {
 
   /**
    * Render the given entity on to the board as a "chess" piece.
+   * @param entity - The entity model to render.
+   * @returns A promise that resolves when the spawn animation completes.
    */
   renderEntity(entity: EntityModel): Promise<void> {
     const obj = new EntityObject(this.#scene, entity);
@@ -246,6 +265,10 @@ export class GameBoardView {
    * Tweens the entity's visual from its current board position to the new tile.
    * Updates rexBoard tracking to the destination before animating so subsequent
    * lookups use the correct position immediately.
+   * @param entity - The entity model with the updated tile position.
+   * @param from - The tile position the entity is moving from.
+   * @param from.x - Source tile x coordinate.
+   * @param from.y - Source tile y coordinate.
    */
   async moveEntity(entity: EntityModel, from: { x: number; y: number }): Promise<void> {
     const obj = this.#getObjectAt(from.x, from.y);
@@ -270,6 +293,12 @@ export class GameBoardView {
 
   /**
    * Plays the attack animation between two entities.
+   * @param attacker - The attacking entity model.
+   * @param target - The target entity model.
+   * @param from - The tile position the attacker is attacking from.
+   * @param from.x - Attacker tile x coordinate.
+   * @param from.y - Attacker tile y coordinate.
+   * @returns A promise that resolves when the attack animation completes.
    */
   attackEntity(attacker: EntityModel, target: EntityModel, from: { x: number; y: number }): Promise<void> {
     const attackerObj = this.#getObjectAt(from.x, from.y);
@@ -285,6 +314,10 @@ export class GameBoardView {
   /**
    * Updates the entity's health bar and queues a floating text notification.
    * Negative amount shows a damage label, positive shows a regen label.
+   * @param entity - The entity model with the updated health values.
+   * @param amount - The health delta (negative for damage, positive for regen).
+   * @param cause - The source of the health change, used to color the notification.
+   * @returns A promise that resolves immediately after queuing the notification.
    */
   updateEntityHealth(entity: EntityModel, amount: number, cause: GameEngineEntityHealthCause): Promise<void> {
     const obj = this.#getObjectAt(entity.tileX, entity.tileY);
@@ -306,6 +339,8 @@ export class GameBoardView {
   /**
    * Plays the death animation then removes the entity from the board and
    * destroys its game object.
+   * @param entity - The entity model to remove.
+   * @returns A promise that resolves when the death animation completes.
    */
   removeEntity(entity: EntityModel): Promise<void> {
     const obj = this.#getObjectAt(entity.tileX, entity.tileY);
@@ -319,6 +354,9 @@ export class GameBoardView {
 
   /**
    * Attaches the particle effect for the given status to the entity's game object.
+   * @param entity - The entity model to apply the status effect to.
+   * @param status - The status type determining which particle effect to attach.
+   * @returns A promise that resolves when the effect is attached.
    */
   addEntityStatus(entity: EntityModel, status: GameEngineEntityStatus): Promise<void> {
     const obj = this.#getObjectAt(entity.tileX, entity.tileY);
@@ -330,6 +368,9 @@ export class GameBoardView {
 
   /**
    * Removes the particle effect for the given status from the entity's game object.
+   * @param entity - The entity model to remove the status effect from.
+   * @param status - The status type determining which particle effect to remove.
+   * @returns A promise that resolves when the effect is removed.
    */
   removeEntityStatus(entity: EntityModel, status: GameEngineEntityStatus): Promise<void> {
     const obj = this.#getObjectAt(entity.tileX, entity.tileY);
@@ -342,6 +383,7 @@ export class GameBoardView {
   /**
    * Switches the active ghost mode and immediately triggers a toggle to
    * re-snap it into position at the current pointer location.
+   * @param ghost - The ghost configuration to activate.
    */
   setGhost(ghost: BoardGhost) {
     this.#ghost.set(ghost);
@@ -377,6 +419,9 @@ export class GameBoardView {
 
   /**
    * Converts TileData to TerrainObjects and applies the highlight set.
+   * @param highlights - The highlight group to apply.
+   * @param highlights.type - The highlight category used to group and clear highlights.
+   * @param highlights.tiles - The set of tiles to highlight.
    */
   addHighlights(highlights: { type: BoardHighlightType; tiles: Set<TileData> }) {
     this.#highlight.diffHighlights({
@@ -387,6 +432,7 @@ export class GameBoardView {
 
   /**
    * Clears all highlights of the given type.
+   * @param type - The highlight category to remove.
    */
   removeHighlights(type: BoardHighlightType) {
     this.#highlight.removeHighlights(type);
@@ -394,6 +440,8 @@ export class GameBoardView {
 
   /**
    * Activates the pathfinder for the given entity with the available move points.
+   * @param entity - The entity to build the pathfinder around.
+   * @param distance - Maximum move distance in tiles.
    */
   activatePathfinder(entity: EntityModel, distance: number) {
     this.#path.activate(entity, this.#getObjectAt(entity.tileX, entity.tileY), distance, this.#getObjectAt.bind(this));

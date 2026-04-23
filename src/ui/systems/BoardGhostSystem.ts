@@ -39,7 +39,8 @@ export class BoardGhostSystem {
 
   /**
    * Switches the active ghost mode. Destroys the current ghost and creates
-   * the appropriate replacement.
+   * the appropriate replacement. No-ops if the mode signature has not changed.
+   * @param ghost - The ghost mode to switch to.
    */
   set(ghost: BoardGhost) {
     const key = this.#getKey(ghost);
@@ -64,6 +65,7 @@ export class BoardGhostSystem {
   /**
    * Snaps the active ghost to the given tile and updates its validity state.
    * Valid is true when no viableTiles set is present or the tile is in the set.
+   * @param tile - The terrain object to snap the ghost to.
    */
   move(tile: TerrainObject) {
     if (!this.#ghost) return;
@@ -90,6 +92,7 @@ export class BoardGhostSystem {
 
   /**
    * Sets validity on the active ghost directly, bypassing the viableTiles check.
+   * @param valid - Whether the current tile is considered valid.
    */
   setValid(valid: boolean) {
     this.#ghost?.setValid(valid);
@@ -97,8 +100,9 @@ export class BoardGhostSystem {
 
   /**
    * Returns the active ghost if it is a TargetGhost, otherwise null.
-   * TargetGhost is a special case — it supports a dual attack/move mode
+   * TargetGhost is a special case - it supports a dual attack/move mode
    * that requires direct access to toggle its visual state at the call site.
+   * @returns The active TargetGhost, or null.
    */
   targetGhost(): TargetGhost | null {
     return this.#ghost instanceof TargetGhost ? this.#ghost : null;
@@ -117,6 +121,7 @@ export class BoardGhostSystem {
   /**
    * Destroys the current ghost and creates a TargetGhost with an optional AoE radius.
    * Converts the TileData viable set to string keys once for O(1) show() lookups.
+   * @param ghost - The TARGET_ATTACK ghost config including viableTiles and optional aoe.
    */
   #setTargetAttack(ghost: BoardGhost & { type: 'TARGET_ATTACK' }) {
     this.#ghost?.destroy();

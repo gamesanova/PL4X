@@ -18,6 +18,12 @@ export type GameSettings = {
   players: PlayerConfig[];
 }
 
+/**
+ * Creates a GameSettings object by merging the provided partial data with
+ * defaults drawn from the SETTINGS constants.
+ * @param data - Partial settings to override defaults.
+ * @returns A complete GameSettings object.
+ */
 export function createSettings(data: Partial<GameSettings> = {}): GameSettings {
   return {
     width: data.width ?? SETTINGS.BOARD.WIDTH,

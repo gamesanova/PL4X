@@ -8,6 +8,8 @@ export class SessionSystem {
 
   /**
    * Returns true if all human players have no remaining living units.
+   * @param managers - The manager registry.
+   * @returns True if the game is over.
    */
   isGameOver(managers: ManagerRegistry): boolean {
     return managers.session.getPlayers()
@@ -17,6 +19,8 @@ export class SessionSystem {
 
   /**
    * Returns true if all bot players have no remaining living units.
+   * @param managers - The manager registry.
+   * @returns True if the player has won.
    */
   isGameWin(managers: ManagerRegistry): boolean {
     return managers.session.getPlayers()

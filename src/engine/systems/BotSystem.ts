@@ -24,6 +24,9 @@ export class BotSystem {
    * Processes the full bot turn for all entities owned by the given player.
    * Returns an ordered list of effects covering every attack and move that
    * occurred.
+   * @param managers - The manager registry.
+   * @param player - The bot player whose turn is being processed.
+   * @returns All effects produced by the bot turn.
    */
   processTurn(managers: ManagerRegistry, player: PlayerModel): GameEngineEffect[] {
     const units = managers.entity.getUnits(player.id);
@@ -39,6 +42,10 @@ export class BotSystem {
   /**
    * Processes a single entity across three sequential phases: attack, move
    * and attack, then random movement. Incapacitated entities are skipped.
+   * @param managers - The manager registry.
+   * @param player - The owning bot player.
+   * @param entity - The entity to process.
+   * @returns All effects produced by the entity's actions.
    */
   #processEntity(managers: ManagerRegistry, player: PlayerModel, entity: EntityModel): GameEngineEffect[] {
     if (entity.isIncapacitated) return [];
@@ -54,6 +61,9 @@ export class BotSystem {
   /**
    * Phase 1. Attacks an adjacent target if the entity has enough AP and a
    * valid target is in range. Picks randomly among available targets.
+   * @param managers - The manager registry.
+   * @param entity - The entity attempting to attack.
+   * @returns The resulting attack effects, or empty if no attack was possible.
    */
   #checkAttack(managers: ManagerRegistry, entity: EntityModel): GameEngineEffect[] {
     if (!entity.hasAttackApAvailable()) return [];
@@ -74,6 +84,9 @@ export class BotSystem {
    * Phase 2. Moves the entity to the nearest tile from which it can attack,
    * then attacks. Skipped if the entity lacks enough AP for at least one move
    * plus an attack, or if no reachable tile puts a target in range.
+   * @param managers - The manager registry.
+   * @param entity - The entity attempting to move and attack.
+   * @returns The resulting move and attack effects.
    */
   #checkMoveAndAttack(managers: ManagerRegistry, entity: EntityModel): GameEngineEffect[] {
     const moveBudget = entity.apCurrent - BALANCE.AP.COST.ATTACK;
@@ -96,8 +109,12 @@ export class BotSystem {
   }
 
   /**
-   * Phase 3. Spends remaining AP moving toward the closest living enemy unit.
+   * Phase 3. Spends remaining AP moving toward a random living enemy unit.
    * Each step picks randomly from the 3 neighbors closest to the target.
+   * @param managers - The manager registry.
+   * @param player - The owning bot player, used to identify enemies.
+   * @param entity - The entity to move.
+   * @returns The resulting move effects.
    */
   #checkMove(managers: ManagerRegistry, player: PlayerModel, entity: EntityModel): GameEngineEffect[] {
     const effects: GameEngineEffect[] = [];

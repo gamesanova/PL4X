@@ -18,6 +18,7 @@ export class MapManager {
   /**
    * Generates and stores the tile grid from settings. Called by initializers
    * at the start of a new session in place of setting tiles directly on state.
+   * @param settings - The game settings providing board width and height.
    */
   generate(settings: GameSettings) {
     this.#state.tiles = MapGenerator.generate({ width: settings.width, height: settings.height });
@@ -32,6 +33,9 @@ export class MapManager {
 
   /**
    * Returns the tile at (x, y), or null if out of bounds or on a null cell.
+   * @param x - Tile x coordinate.
+   * @param y - Tile y coordinate.
+   * @returns The tile at that position, or null.
    */
   getTileAt(x: number, y: number) {
     return this.#state.tiles[y]?.[x] ?? null;
@@ -40,12 +44,17 @@ export class MapManager {
   /**
    * Returns tiles in one or more rings around (x, y).
    *
-   * getTileRing(x, y, 3)    — ring 3 only
-   * getTileRing(x, y, 3, 2) — rings 2 and 3
-   * getTileRing(x, y, 3, 1) — rings 1, 2, and 3
-   * getTileRing(x, y, 3, 0) — center tile + rings 1, 2, and 3
+   * getTileRing(x, y, 3)    - ring 3 only
+   * getTileRing(x, y, 3, 2) - rings 2 and 3
+   * getTileRing(x, y, 3, 1) - rings 1, 2, and 3
+   * getTileRing(x, y, 3, 0) - center tile + rings 1, 2, and 3
    *
    * `start` is clamped to [0, ring]. Omitting it returns only the outer ring.
+   * @param x - Center tile x coordinate.
+   * @param y - Center tile y coordinate.
+   * @param ring - Outermost ring distance to include.
+   * @param start - Innermost ring distance to include. Defaults to `ring`.
+   * @returns All tiles within the specified ring range.
    */
   getTileRing(x: number, y: number, ring: number, start?: number): TileData[] {
     if (start === undefined) start = ring;
@@ -69,7 +78,11 @@ export class MapManager {
 
   /**
    * Returns all tiles at exactly `ring` distance from (x, y) using cube coordinate math.
-   * Starts at the TL position and walks clockwise. Called by getTileRing.
+   * Starts at the top-left position and walks clockwise. Called by getTileRing.
+   * @param x - Center tile x coordinate.
+   * @param y - Center tile y coordinate.
+   * @param ring - Ring distance to collect.
+   * @returns All tiles at exactly that ring distance.
    */
   #getRing(x: number, y: number, ring: number): TileData[] {
     const toCube = (x: number, y: number) => {
@@ -106,6 +119,7 @@ export class MapManager {
 
   /**
    * Returns the set of tiles on the outer perimeter of the map.
+   * @returns The cached set of edge tiles.
    */
   get edgeTiles(): Set<TileData> {
     return this.#edgeTiles;

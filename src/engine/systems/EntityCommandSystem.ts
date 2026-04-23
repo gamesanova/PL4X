@@ -12,6 +12,9 @@ export class EntityCommandSystem {
   /**
    * Returns all tiles occupied by units owned by the given player that have
    * actions available this turn (not incapacitated and unit has AP remaining).
+   * @param managers - The manager registry.
+   * @param player - The player whose actionable units to find.
+   * @returns The set of tiles with actionable units.
    */
   getActionableTiles(managers: ManagerRegistry, player: PlayerModel): Set<TileData> {
     const actionable = new Set<TileData>();

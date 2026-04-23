@@ -36,6 +36,8 @@ export class EntityManager {
   /**
    * Creates and registers a unit entity from the given config, merging asset
    * and constant data. Returns null if the target tile is occupied.
+   * @param config - Unit configuration including player, tile, and variant.
+   * @returns The created entity, or null if the tile was occupied.
    */
   addUnit(config: UnitConfig): EntityModel | null {
     if (this.isTileOccupied(config.tileX, config.tileY)) {
@@ -61,6 +63,8 @@ export class EntityManager {
   /**
    * Returns the color key assigned to the given player, falling back to the
    * settings default if the player is not yet registered.
+   * @param playerId - The player ID to look up.
+   * @returns The player's color key.
    */
   #getPlayerColor(playerId: string): GameSettingsColorKey {
     return this.#state.players.find(p => p.id === playerId)?.color ?? SETTINGS.COLOR.DEFAULT;
@@ -68,6 +72,8 @@ export class EntityManager {
 
   /**
    * Returns all unit entities owned by the given player.
+   * @param playerId - The player ID to look up.
+   * @returns All entities owned by that player.
    */
   getUnits(playerId: string): EntityModel[] {
     const playerSet = this.#entitiesByPlayer.get(playerId);
@@ -79,6 +85,9 @@ export class EntityManager {
 
   /**
    * Returns the entity at the given tile coordinates, or null if unoccupied.
+   * @param x - Tile x coordinate.
+   * @param y - Tile y coordinate.
+   * @returns The entity at that tile, or null.
    */
   getEntityAt(x: number, y: number): EntityModel | null {
     return this.#entitiesByTile.get(this.#tileKey(x, y)) ?? null;
@@ -86,6 +95,9 @@ export class EntityManager {
 
   /**
    * Returns true if a tile is occupied by any entity.
+   * @param x - Tile x coordinate.
+   * @param y - Tile y coordinate.
+   * @returns True if the tile is occupied.
    */
   isTileOccupied(x: number, y: number): boolean {
     return this.#entitiesByTile.has(this.#tileKey(x, y));
@@ -93,6 +105,9 @@ export class EntityManager {
 
   /**
    * Encodes (x, y) tile coordinates into a single integer key for the tile cache.
+   * @param x - Tile x coordinate.
+   * @param y - Tile y coordinate.
+   * @returns The encoded integer key.
    */
   #tileKey(x: number, y: number): number {
     return (x << 16) | y;
@@ -100,6 +115,7 @@ export class EntityManager {
 
   /**
    * Registers an entity in GameState and both lookup caches (by tile and by player).
+   * @param entity - The entity to register.
    */
   #addEntity(entity: EntityModel) {
     const tileKey = this.#tileKey(entity.tileX, entity.tileY);
@@ -117,8 +133,11 @@ export class EntityManager {
 
   /**
    * Moves an entity to a new tile, updating its coordinates and re-keying the
-   * tile cache. Does not validate occupancy, caller must ensure the target tile
+   * tile cache. Does not validate occupancy - caller must ensure the target tile
    * is free before calling.
+   * @param entity - The entity to move.
+   * @param toX - Destination tile x coordinate.
+   * @param toY - Destination tile y coordinate.
    */
   moveEntity(entity: EntityModel, toX: number, toY: number): void {
     this.#entitiesByTile.delete(this.#tileKey(entity.tileX, entity.tileY));
@@ -129,6 +148,7 @@ export class EntityManager {
 
   /**
    * Removes an entity from GameState and both lookup caches (by tile and by player).
+   * @param entity - The entity to remove.
    */
   removeEntity(entity: EntityModel) {
     const tileKey = this.#tileKey(entity.tileX, entity.tileY);

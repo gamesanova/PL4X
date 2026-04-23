@@ -107,7 +107,7 @@ export class MainMenuView {
     const size = (totalWidth - UI.SPACING.GAP.MD * (colorCount - 1)) / colorCount;
 
     const colorOptions = Object.fromEntries(
-      Object.keys(SETTINGS.COLOR.OPTIONS).map((key, i) => [key, { img: 'color_dots', imgFrame: i }])
+      Object.keys(SETTINGS.COLOR.OPTIONS).map((key, i) => [key, { img: 'color_dots', imgFrame: i }]),
     );
 
     return this.#scene.rexUI.add.buttons({

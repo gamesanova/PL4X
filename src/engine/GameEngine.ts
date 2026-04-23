@@ -47,6 +47,8 @@ export class GameEngine {
    * target phase instead — this lets a phase hand off handling without
    * triggering a cancel or any intermediate state changes. A redirect must
    * always be the only effect returned by a phase.
+   * @param action - The action to dispatch.
+   * @returns The effects produced by the active phase.
    */
   dispatch(action: GameEngineAction): GameEngineEffect[] {
     const phase = this.#phases[this.#managers.session.getPhase()];
@@ -60,6 +62,8 @@ export class GameEngine {
    * Bootstraps a game session. Runs either NewGame or LoadGame depending on
    * the action type, then initialises all manager and system caches. Returns
    * the initial entity and tile data the scene needs to build its views.
+   * @param action - The init action specifying NEW or LOAD.
+   * @returns The initial data the scene needs to build its views.
    */
   async init(action: GameEngineInitAction): Promise<GameEngineInitData> {
     switch (action.type) {

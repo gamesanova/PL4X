@@ -66,6 +66,7 @@ export class TerrainObject extends Phaser.GameObjects.Container {
    * Sets the highlight overlay. If the highlight is off, fades in from alpha 0.
    * If already on, tweens the tint from the current color to the new one without
    * touching alpha.
+   * @param styles - The highlight color, opacity, and tween duration.
    */
   setHighlight(styles: HighlightStyles): void {
     if (!this.#highlight) {
@@ -95,6 +96,7 @@ export class TerrainObject extends Phaser.GameObjects.Container {
   /**
    * Tweens the tint from the current color to the new style's color.
    * Alpha is left untouched. Only called when the highlight is already on.
+   * @param styles - The target highlight color, opacity, and tween duration.
    */
   #switchHighlight(styles: HighlightStyles): void {
     const from = Phaser.Display.Color.IntegerToColor(this.#highlight!.tintTopLeft);
@@ -116,6 +118,7 @@ export class TerrainObject extends Phaser.GameObjects.Container {
 
   /**
    * Shows a step number on the tile. Creates the label on first call.
+   * @param n - The step number to display.
    */
   setStepLabel(n: number): void {
     if (!this.#stepLabel) {
@@ -141,6 +144,8 @@ export class TerrainObject extends Phaser.GameObjects.Container {
   /**
    * Fades out the highlight overlay and hides it on complete.
    * Stops any in-progress set tween before starting the fade out.
+   * @param styles - Object containing the fade duration.
+   * @param styles.duration - Duration of the fade out tween in milliseconds.
    */
   unsetHighlight(styles: {duration: number}): void {
     this.#isHighlightOn = false;

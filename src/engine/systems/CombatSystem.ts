@@ -16,6 +16,10 @@ export class CombatSystem {
    * Executes an attack from attacker to target. Resolves AOE targets, applies
    * damage with multipliers, removes dead entities, spends AP, and returns all
    * resulting effects.
+   * @param managers - The manager registry.
+   * @param attacker - The attacking entity.
+   * @param target - The primary target entity.
+   * @returns All effects produced by the attack.
    */
   executeAttack(managers: ManagerRegistry, attacker: EntityModel, target: EntityModel): GameEngineEffect[] {
     const aoeTargets = this.getAttackAoeTargets(managers, attacker, target);
@@ -45,6 +49,9 @@ export class CombatSystem {
 
   /**
    * Returns true if the entity has a valid attack available this turn.
+   * @param managers - The manager registry.
+   * @param entity - The entity to check.
+   * @returns True if at least one attack target is in range.
    */
   hasAttackAvailable(managers: ManagerRegistry, entity: EntityModel): boolean {
     return this.getAttackTargetTiles(managers, entity).size > 0;
@@ -53,6 +60,9 @@ export class CombatSystem {
   /**
    * Returns all tiles containing valid attack targets for the given entity
    * from its current position. Convenience wrapper around getTargetTilesFrom.
+   * @param managers - The manager registry.
+   * @param entity - The entity to find targets for.
+   * @returns The set of tiles containing valid targets.
    */
   getAttackTargetTiles(managers: ManagerRegistry, entity: EntityModel): Set<TileData> {
     const fromTile = managers.map.getTileAt(entity.tileX, entity.tileY);
@@ -66,6 +76,10 @@ export class CombatSystem {
    * 1.0. If the attacker has aoe > 0, each ring up to that radius is checked
    * against BALANCE.DAMAGE.AOE for a falloff multiplier, stops early if the
    * ring index exceeds the AOE array length.
+   * @param managers - The manager registry.
+   * @param attacker - The attacking entity.
+   * @param target - The primary target entity.
+   * @returns A map of each affected entity to its damage multiplier.
    */
   getAttackAoeTargets(managers: ManagerRegistry, attacker: EntityModel, target: EntityModel): Map<EntityModel, number> {
     const result = new Map<EntityModel, number>();
@@ -99,6 +113,9 @@ export class CombatSystem {
    * Calculates damage from attacker to target using the Civ6-style exponential
    * formula. Uses attack vs armor. Result is randomised plus or minus 15% and
    * rounded up.
+   * @param attacker - The attacking entity.
+   * @param target - The defending entity.
+   * @returns The calculated damage amount.
    */
   calculateDamage(attacker: EntityModel, target: EntityModel): number {
     const delta = (attacker.attack ?? 0) - (target.armor ?? 0);
@@ -115,6 +132,10 @@ export class CombatSystem {
    * the bot from always favoring the same neighbor direction. Returns the chosen
    * tile, its movement cost, and the precomputed target tiles from that position,
    * or null if no valid position exists within budget.
+   * @param managers - The manager registry.
+   * @param entity - The entity looking for a move-to-attack position.
+   * @param moveBudget - The maximum AP the entity can spend on movement.
+   * @returns The chosen tile, its cost, and available target tiles, or null.
    */
   findMoveToAttackTile(managers: ManagerRegistry, entity: EntityModel, moveBudget: number): { tile: TileData; cost: number; targetTiles: Set<TileData> } | null {
     const start = managers.map.getTileAt(entity.tileX, entity.tileY);
@@ -164,6 +185,10 @@ export class CombatSystem {
    * when standing on fromTile. Valid targets belong to a different player
    * and are not incapacitated. Uses the entity's range ring so range > 1
    * is handled correctly.
+   * @param managers - The manager registry.
+   * @param entity - The entity to find targets for.
+   * @param fromTile - The tile to evaluate targets from.
+   * @returns The set of tiles containing valid targets from that position.
    */
   #getTargetTilesFrom(managers: ManagerRegistry, entity: EntityModel, fromTile: TileData): Set<TileData> {
     const tiles = managers.map.getTileRing(fromTile.x, fromTile.y, entity.range, 1);

@@ -1,4 +1,3 @@
-import { BALANCE } from '@constants';
 import { GameEngineAction, GameEngineEffect } from '@engine';
 import { TileData } from '@engine/maps';
 import { ManagerRegistry } from '@engine/managers';
@@ -21,6 +20,11 @@ export class EntityCommandPhase extends BasePhase {
    * Resolves a left click as either a move or an attack. If the tile is empty
    * and reachable, delegates to #handleMove. Otherwise checks if the tile is a
    * valid attack target and delegates to #handleAttack.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @param x - Tile x coordinate of the click.
+   * @param y - Tile y coordinate of the click.
+   * @returns The resulting effects.
    */
   #handlePointerLeftDown(managers: ManagerRegistry, systems: SystemRegistry, x: number, y: number): GameEngineEffect[] {
     const attacker = managers.session.getActiveEntity();
@@ -57,6 +61,11 @@ export class EntityCommandPhase extends BasePhase {
 
   /**
    * Executes the attack via CombatSystem and appends GAME_WIN if no bot units remain.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @param attacker - The attacking entity.
+   * @param target - The entity being attacked.
+   * @returns The resulting effects including GAME_WIN if applicable.
    */
   #handleAttack(managers: ManagerRegistry, systems: SystemRegistry, attacker: EntityModel, target: EntityModel): GameEngineEffect[] {
     const effects = systems.combat.executeAttack(managers, attacker, target);
@@ -70,6 +79,12 @@ export class EntityCommandPhase extends BasePhase {
 
   /**
    * Executes a unit move: mutates position, spends AP, and returns ENTITY_MOVED.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @param unit - The entity to move.
+   * @param target - The destination tile.
+   * @param moveCost - The AP cost to reach the target.
+   * @returns The resulting effects.
    */
   #handleMove(managers: ManagerRegistry, systems: SystemRegistry, unit: EntityModel, target: TileData, moveCost: number): GameEngineEffect[] {
     return [systems.movement.executeMove(managers, unit, target, moveCost)];
@@ -80,6 +95,12 @@ export class EntityCommandPhase extends BasePhase {
    * unit can no longer act, transitions to ENTITY_SELECT. Otherwise emits
    * HIGHLIGHT_ENTITY_COMMAND, GHOST_TARGET_ATTACK if attacks remain, and
    * ENTITY_PATHFINDER_ACTIVATE if movement remains.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @param player - The current player.
+   * @param unit - The entity that just moved.
+   * @param target - The tile the entity moved to.
+   * @returns The resulting effects.
    */
   #handlePostMove(managers: ManagerRegistry, systems: SystemRegistry, player: PlayerModel, unit: EntityModel, target: TileData): GameEngineEffect[] {
     return [
@@ -92,6 +113,11 @@ export class EntityCommandPhase extends BasePhase {
    * Shared post-action handler for both attack and move. Checks remaining AP
    * and available attacks to determine if the entity can still act. If exhausted,
    * auto-selects the next actionable entity or falls back to ENTITY_SELECT if none remain.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @param player - The current player.
+   * @param attacker - The entity that just acted.
+   * @returns The resulting effects.
    */
   #handlePostAction(managers: ManagerRegistry, systems: SystemRegistry, player: PlayerModel, attacker: EntityModel): GameEngineEffect[] {
     const canAttack       = attacker.hasAttackApAvailable();
@@ -133,6 +159,9 @@ export class EntityCommandPhase extends BasePhase {
    * Cancels the active unit command. Clears the active entity, returns to IDLE,
    * and restores HIGHLIGHT_ENTITY_COMMAND for any units that still have actions
    * available this turn.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @returns The resulting effects.
    */
   #handleCancel(managers: ManagerRegistry, systems: SystemRegistry): GameEngineEffect[] {
     const player = managers.session.getCurrentPlayer();

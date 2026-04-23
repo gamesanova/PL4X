@@ -7,6 +7,7 @@ export class LoadGame {
    * Fetches a saved snapshot from local storage or an external API and deserializes
    * it into state via managers. Handles version migration or data mutation before
    * restoring. Can be made async if the data source requires it.
+   * @param managers - The manager registry to restore state into.
    */
   static run(managers: ManagerRegistry) {
     // TODO: Fetch data (local storage or API).

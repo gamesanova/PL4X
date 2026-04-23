@@ -56,6 +56,7 @@ export class TargetGhost extends BaseGhost {
   /**
    * Builds the background sprite, optional AoE circle, and animated beads,
    * then adds them to the container. Starts hidden; made visible on snapTo().
+   * @param aoe - Optional AoE radius in tiles to render as a circle overlay.
    */
   #draw(aoe?: number) {
     const children: Phaser.GameObjects.GameObject[] = [];
@@ -105,6 +106,7 @@ export class TargetGhost extends BaseGhost {
   /**
    * Shows the invalid background tint when the tile is not a valid target or
    * reachable move destination. Hides it when valid.
+   * @param valid - Whether the current tile is a valid target.
    */
   setValid(valid: boolean): void {
     this.#bg.setVisible(!valid);
@@ -114,6 +116,7 @@ export class TargetGhost extends BaseGhost {
    * Toggles between attack mode (red beads) and move mode (blue beads).
    * Called each tile-over when the pathfinder is active to reflect whether
    * the hovered tile is an attack target or a move destination.
+   * @param moving - True for move mode, false for attack mode.
    */
   setMoving(moving: boolean): void {
     const color = moving ? this.#styles.beadMoveColor : this.#styles.beadAttackColor;
@@ -128,6 +131,7 @@ export class TargetGhost extends BaseGhost {
   /**
    * Kills all bead tweens before destroying the container to prevent
    * tween callbacks firing on destroyed objects.
+   * @param fromScene - Passed through to the Phaser Container destroy call.
    */
   destroy(fromScene?: boolean): void {
     for (const bead of this.#beads) {

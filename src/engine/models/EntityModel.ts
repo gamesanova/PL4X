@@ -86,6 +86,7 @@ export class EntityModel {
 
   /**
    * Returns true if the entity has any AP remaining this turn.
+   * @returns True if apCurrent is greater than zero.
    */
   hasApAvailable(): boolean {
     return this.apCurrent > 0;
@@ -93,6 +94,7 @@ export class EntityModel {
 
   /**
    * Returns true if the entity has enough AP to perform an attack.
+   * @returns True if apCurrent meets the attack AP cost.
    */
   hasAttackApAvailable(): boolean {
     return this.apCurrent >= BALANCE.AP.COST.ATTACK;
@@ -100,6 +102,7 @@ export class EntityModel {
 
   /**
    * Returns true if the entity has enough AP to perform a move.
+   * @returns True if apCurrent meets the movement AP cost.
    */
   hasMoveApAvailable(): boolean {
     return this.apCurrent >= BALANCE.AP.COST.MOVEMENT;
@@ -107,6 +110,7 @@ export class EntityModel {
 
   /**
    * Deducts the given amount from the entity's AP, floored at zero.
+   * @param amount - The AP cost to deduct.
    */
   spendAp(amount: number): void {
     this.apCurrent = Math.max(0, this.apCurrent - amount);
@@ -121,6 +125,7 @@ export class EntityModel {
 
   /**
    * Returns true if the entity currently has a daze counter above zero.
+   * @returns True if dazedCounter is greater than zero.
    */
   get isDazed(): boolean {
     return this.dazedCounter > 0;
@@ -130,6 +135,7 @@ export class EntityModel {
    * Returns true if the entity is prevented from acting this turn by any
    * status effect. Currently covers dazed. Additional incapacitating statuses
    * should be added here as they are introduced.
+   * @returns True if any incapacitating status is active.
    */
   get isIncapacitated(): boolean {
     return this.isDazed;
@@ -138,6 +144,7 @@ export class EntityModel {
   /**
    * Returns true if the entity has at least one attack remaining this turn.
    * Returns false if the entity does not track attacks (null).
+   * @returns True if attacksCurrent is a positive number.
    */
   get hasAttackAvailable(): boolean {
     return this.attacksCurrent !== null && this.attacksCurrent > 0;
@@ -165,6 +172,7 @@ export class EntityModel {
 
   /**
    * Sets the daze counter to the given number of turns. Defaults to 1.
+   * @param turns - Number of turns to daze the entity for.
    */
   daze(turns: number = 1): void {
     this.dazedCounter = turns;
@@ -180,9 +188,10 @@ export class EntityModel {
 
   /**
    * Restores health by the given amount, capped at the entity's maximum health.
-   * Uses a null check rather than a truthiness check so that dazed entities at
-   * 0 health can still regen. No-ops if the entity has no health stat assigned,
-   * as some entity types do not track health at all.
+   * Uses a null check rather than a truthiness check so that entities at 0 health
+   * can still regen. No-ops if the entity has no health stat assigned, as some
+   * entity types do not track health at all.
+   * @param amount - The amount of health to restore.
    */
   regenHealth(amount: number): void {
     if (this.healthCurrent !== null && this.healthMax !== null) {
@@ -192,8 +201,9 @@ export class EntityModel {
 
   /**
    * Reduces health by the given amount, floored at zero. The truthiness guard
-   * covers two cases: entities with no health pool (null) and dazed entities at
-   * 0 health, both should not take further damage.
+   * covers entities with no health pool (null) and those already at 0 health,
+   * neither of which should take further damage.
+   * @param amount - The amount of damage to apply.
    */
   takeDamage(amount: number): void {
     if (this.healthCurrent) {

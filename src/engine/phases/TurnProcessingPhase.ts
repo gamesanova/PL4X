@@ -7,6 +7,10 @@ export class TurnProcessingPhase {
   /**
    * Routes incoming actions to the appropriate handler. Currently only
    * processes TURN_NEXT_PLAYER, which advances the player sequence.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @param action - The action to handle.
+   * @returns The resulting effects.
    */
   handle(managers: ManagerRegistry, systems: SystemRegistry, action: GameEngineAction): GameEngineEffect[] {
     switch (action.type) {
@@ -16,13 +20,16 @@ export class TurnProcessingPhase {
   }
 
   /**
-   * Advances to the next player in the sequence and delegates to the human
-   * handler. Non-human players are skipped by chaining TURN_NEXT_PLAYER via
-   * DISPATCH until the next human is reached.
+   * Advances to the next player in the sequence and delegates to the appropriate
+   * turn handler. Bot turns chain back via DISPATCH; human turns increment the
+   * turn counter and emit TURN_COMPLETED.
    *
    * If there is more than one human then some kind of starting player
    * logic may be needed to track for the incrementTurn, however for now
    * it's kept simple and just updated on the human turn automatically.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @returns The resulting effects.
    */
   #handleNextPlayer(managers: ManagerRegistry, systems: SystemRegistry): GameEngineEffect[] {
     managers.session.incrementPlayer();
@@ -52,8 +59,12 @@ export class TurnProcessingPhase {
   }
 
   /**
-   * Processes a bot player's turn. Bot logic is not yet implemented; for now
-   * the turn is skipped by chaining TURN_NEXT_PLAYER via DISPATCH.
+   * Processes a bot player's turn via BotSystem, then chains TURN_NEXT_PLAYER.
+   * Emits GAME_OVER if no human units remain after the bot acts.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @param player - The bot player whose turn is being processed.
+   * @returns The resulting effects.
    */
   #handleBot(managers: ManagerRegistry, systems: SystemRegistry, player: PlayerModel): GameEngineEffect[] {
     const effects: GameEngineEffect[] = systems.bot.processTurn(managers, player);
@@ -68,8 +79,12 @@ export class TurnProcessingPhase {
   }
 
   /**
-   * Processes a human player's turn, transitions to IDLE and runs HumanSystem
-   * to produce resource effects.
+   * Processes a human player's turn. Transitions to IDLE, runs HumanSystem
+   * for status and regen effects, highlights actionable units, and auto-selects.
+   * @param managers - The manager registry.
+   * @param systems - The system registry.
+   * @param player - The human player whose turn is being processed.
+   * @returns The resulting effects.
    */
   #handleHuman(managers: ManagerRegistry, systems: SystemRegistry, player: PlayerModel): GameEngineEffect[] {
     // NOTE: May need to put this into a separate dispatch at some point

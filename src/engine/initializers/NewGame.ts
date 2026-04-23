@@ -13,6 +13,8 @@ export class NewGame {
    * Bootstraps a fresh game from settings. Generates the tile map, assigns each
    * player a random board side, and spawns two starter units per player centered
    * along that side.
+   * @param settings - The game settings for this session.
+   * @param managers - The manager registry to initialize state into.
    */
   static run(settings: GameSettings, managers: ManagerRegistry) {
     const colors = (Object.keys(SETTINGS.COLOR.OPTIONS) as GameSettingsColorKey[]).filter(c => c !== settings.color);
@@ -56,7 +58,13 @@ export class NewGame {
 
   /**
    * Returns `count` distinct random tiles from the given board side, drawn
-   * from the cached edge tiles (which excludes null cells).
+   * from the cached edge tiles (which excludes corner cells).
+   * @param edges - The full set of edge tiles for the board.
+   * @param side - Which board side to draw tiles from.
+   * @param width - Board width in tiles.
+   * @param height - Board height in tiles.
+   * @param count - Number of tiles to return.
+   * @returns An array of randomly selected tiles from the specified side.
    */
   static #randomSideTiles(edges: Set<TileData>, side: Side, width: number, height: number, count: number): TileData[] {
     const filter = (t: TileData) => {
