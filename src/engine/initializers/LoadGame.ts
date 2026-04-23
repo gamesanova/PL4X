@@ -1,6 +1,10 @@
 import { GameStateSnapshot } from '@engine';
 import { ManagerRegistry } from '@engine/managers';
 
+/**
+ * Fetches a saved snapshot and restores it into state via managers. Supports
+ * async loading and version migration.
+ */
 export class LoadGame {
 
   /**

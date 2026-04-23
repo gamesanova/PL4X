@@ -7,6 +7,10 @@ import { sample } from '@utils';
 
 type Side = 'TOP' | 'BOTTOM' | 'LEFT' | 'RIGHT';
 
+/**
+ * Bootstraps a fresh game from settings. Generates the map, places the home
+ * building, and spawns the hero.
+ */
 export class NewGame {
 
   /**

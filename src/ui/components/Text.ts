@@ -7,6 +7,10 @@ export type TextStyles = Omit<Phaser.Types.GameObjects.Text.TextStyle, 'color'> 
   color?: number;
 };
 
+/**
+ * Thin wrapper around Phaser.GameObjects.Text that accepts color as a hex
+ * number and converts it to a CSS string.
+ */
 export class Text extends Phaser.GameObjects.Text {
   constructor(scene: Phaser.Scene, styles: TextStyles) {
     const { x = 0, y = 0, text, color, ...rest } = styles;

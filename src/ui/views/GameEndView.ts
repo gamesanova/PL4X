@@ -1,6 +1,10 @@
 import { EVENTS, I18N, UI, UI_SIZES, UI_VARIANTS } from '@constants';
 import { Bg, Button } from '@ui/components';
 
+/**
+ * Game over overlay. Fades in over a dark backdrop with a header and
+ * Restart/Quit buttons. Shown by PlayScene when a GAME_OVER effect is received.
+ */
 export class GameEndView {
   #scene: Phaser.Scene;
   #container: Phaser.GameObjects.Container;

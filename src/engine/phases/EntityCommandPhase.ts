@@ -5,6 +5,11 @@ import { EntityModel, PlayerModel } from '@engine/models';
 import { SystemRegistry } from '@engine/systems';
 import { BasePhase } from '@engine/phases';
 
+/**
+ * Active when a commandable entity is selected. Left click resolves as move
+ * or attack depending on the target tile. Right click and SELECTION_CANCEL
+ * cancel. TOWER_PLACEMENT_SELECT and TURN_END interrupt and forward to IDLE.
+ */
 export class EntityCommandPhase extends BasePhase {
   handle(managers: ManagerRegistry, systems: SystemRegistry, action: GameEngineAction): GameEngineEffect[] {
     switch (action.type) {

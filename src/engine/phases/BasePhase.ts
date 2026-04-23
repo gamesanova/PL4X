@@ -1,6 +1,10 @@
 import { GameEngineAction, GameEngineEffect } from '@engine';
 import { ManagerRegistry } from '@engine/managers';
 
+/**
+ * Shared base for phases that support cancel and interrupt. Provides
+ * handleCancel and handleInterrupt as common implementations.
+ */
 export class BasePhase {
 
   /**

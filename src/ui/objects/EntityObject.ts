@@ -2,6 +2,10 @@ import { SETTINGS, UI_SIZES, UI_VARIANTS } from '@constants';
 import type { EntityModel } from '@engine/models';
 import { Healthbar } from '@ui/components';
 
+/**
+ * Container for a single entity on the board. Renders the entity sprite and
+ * an optional Healthbar shown when current health drops below max.
+ */
 export class EntityObject extends Phaser.GameObjects.Container {
   #sprite: Phaser.GameObjects.Sprite;
   #healthbar: Healthbar | null = null;

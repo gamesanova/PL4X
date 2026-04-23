@@ -3,6 +3,10 @@ import { TileData } from '@engine/maps';
 import { ManagerRegistry } from '@engine/managers';
 import { SystemRegistry } from '@engine/systems';
 
+/**
+ * Default active phase during the human turn. Handles entity selection,
+ * turn end, and tower placement transitions.
+ */
 export class IdlePhase {
   handle(managers: ManagerRegistry, systems: SystemRegistry, action: GameEngineAction): GameEngineEffect[] {
     switch (action.type) {

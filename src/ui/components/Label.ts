@@ -12,6 +12,10 @@ type LabelStyles = {
   color: number;
 };
 
+/**
+ * Single text element inside a sized container with left, center, or right
+ * alignment.
+ */
 export class Label extends Phaser.GameObjects.Container {
   #text!: Phaser.GameObjects.Text;
   #styles!: LabelStyles;

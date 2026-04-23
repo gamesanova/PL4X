@@ -1,6 +1,10 @@
 import { EVENTS, I18N, UI, UI_SIZES, UI_VARIANTS } from '@constants';
 import { Bg, Button } from '@ui/components';
 
+/**
+ * In-game pause menu overlay. Fades in and out over a dark backdrop. Contains
+ * Resume, Restart, and Quit buttons. Shown and hidden by PlayScene.
+ */
 export class GameMenuView {
   #scene: Phaser.Scene;
   #container: Phaser.GameObjects.Container;

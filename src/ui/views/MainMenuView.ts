@@ -3,6 +3,10 @@ import type { GameSettingsColorKey } from '@constants';
 import { GameSettings } from '@engine';
 import { Button, ButtonGroup, Panel, Text } from '@ui/components';
 
+/**
+ * Main menu layout. Hero and difficulty selection via ButtonGroup, hero stat
+ * display via LabelValue rows, and a Start button.
+ */
 export class MainMenuView {
   #scene!: Phaser.Scene;
   #settings!: GameSettings;

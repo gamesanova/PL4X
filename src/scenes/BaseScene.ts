@@ -1,5 +1,9 @@
 import Phaser from 'phaser';
 
+/**
+ * Extends Phaser.Scene with a tracked event listener helper that automatically
+ * removes all listeners on scene shutdown.
+ */
 export class BaseScene extends Phaser.Scene {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #listeners: Array<[string, (...args: any[]) => void]> = [];

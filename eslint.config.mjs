@@ -4,7 +4,7 @@ import tseslint from "typescript-eslint";
 import jsdoc from "eslint-plugin-jsdoc";
 
 export default tseslint.config(
-  { ignores: ["dist"] },
+  { ignores: ["dist", "**/*.d.ts"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   jsdoc.configs['flat/recommended-typescript'],
@@ -31,6 +31,7 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
       "jsdoc/multiline-blocks": ["error", { "noSingleLineBlocks": true }],
       "jsdoc/require-hyphen-before-param-description": ["error", "always"],
+      "jsdoc/require-jsdoc": ["warn", { "contexts": ["ClassDeclaration"] }],
     },
   },
 );

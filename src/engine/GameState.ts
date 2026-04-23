@@ -2,6 +2,10 @@ import { EntityModel, PlayerModel } from '@engine/models';
 import { GameEnginePhase, GameSettings, GameStateSnapshot } from '@engine';
 import { TileData } from '@engine/maps';
 
+/**
+ * Raw state container. Holds entities, tiles, phase, settings, and turn.
+ * Accessed only through managers. Nothing outside the engine touches this directly.
+ */
 export class GameState {
   #currentPlayerId: string | null = null;
   #entities: Map<string, EntityModel> = new Map();

@@ -9,6 +9,10 @@ type BgStyles = {
   opacity: number;
 };
 
+/**
+ * Full-coverage rectangle overlay with configurable color and opacity. Used
+ * to darken the screen behind menus.
+ */
 export class Bg extends Phaser.GameObjects.Container {
   #styles: BgStyles;
   #bg!: Phaser.GameObjects.Rectangle;

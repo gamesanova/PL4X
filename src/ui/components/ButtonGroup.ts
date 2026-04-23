@@ -17,6 +17,11 @@ type ButtonGroupConfig = {
   onUnavailable?: (key: string) => void;
 };
 
+/**
+ * Manages a collection of Button instances as a mutually exclusive selection
+ * group. Handles value selection, disabled and unavailable states, and optional
+ * column layout via rexUI sizer labels.
+ */
 export class ButtonGroup {
   #buttons: Record<string, Button> = {};
   buttons: Button[];

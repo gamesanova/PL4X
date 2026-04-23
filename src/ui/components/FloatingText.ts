@@ -10,6 +10,10 @@ interface FloatingTextStyles {
   duration: number;
 }
 
+/**
+ * One-shot animated text that floats upward and fades out. Returns a promise
+ * that resolves on completion.
+ */
 export class FloatingText {
   #scene: Phaser.Scene;
   #styles: FloatingTextStyles;

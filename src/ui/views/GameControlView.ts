@@ -4,6 +4,10 @@ import { Button, LabelValue, Panel } from '@ui/components';
 const LABEL_KEYS = ['score', 'turn'] as const;
 export type GameControlLabels = Record<typeof LABEL_KEYS[number], string>;
 
+/**
+ * Top-left control panel. Renders score, gold, AP, and turn labels, plus
+ * help and menu buttons.
+ */
 export class GameControlView {
   #scene: Phaser.Scene;
   #labels = {} as Record<keyof GameControlLabels, LabelValue>;

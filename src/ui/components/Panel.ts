@@ -9,6 +9,10 @@ type PanelStyles = {
   bevel: number;
 };
 
+/**
+ * Beveled rectangle drawn with Graphics. Four trapezoids produce a 3D inset
+ * or outset appearance. Used as the background for most UI panels and buttons.
+ */
 export class Panel extends Phaser.GameObjects.Container {
   #styles!: PanelStyles;
   #graphics!: Phaser.GameObjects.Graphics;

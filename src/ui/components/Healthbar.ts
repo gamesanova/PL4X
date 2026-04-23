@@ -8,6 +8,10 @@ type HealthbarStyles = {
   vertical?: boolean;
 };
 
+/**
+ * Rectangular fill bar for rendering health. Supports horizontal and vertical
+ * orientation. Hidden by default and shown when health drops below max.
+ */
 export class Healthbar extends Phaser.GameObjects.Container {
   #styles!: HealthbarStyles;
   #fill!: Phaser.GameObjects.Rectangle;

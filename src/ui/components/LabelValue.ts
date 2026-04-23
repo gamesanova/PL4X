@@ -14,6 +14,10 @@ type LabelValueStyles = {
   color: number;
 };
 
+/**
+ * Paired label and value rendered side by side. Used for stat display rows
+ * in control and command panels.
+ */
 export class LabelValue extends Phaser.GameObjects.Container {
   #scene!: Phaser.Scene;
   #text!: Label;

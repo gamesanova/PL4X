@@ -1,6 +1,10 @@
 import { UI_SIZES, UI_VARIANTS } from '@constants';
 import { Panel } from '@ui/components';
 
+/**
+ * Renders the full-screen background Panel behind all other UI. Created first
+ * in both PlayScene and MenuScene.
+ */
 export class BgView {
   #scene: Phaser.Scene;
 

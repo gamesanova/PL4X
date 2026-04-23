@@ -3,6 +3,10 @@ import { PlayerModel } from '@engine/models';
 import { ManagerRegistry } from '@engine/managers';
 import { SystemRegistry } from '@engine/systems';
 
+/**
+ * Active during automated turn cycling. Advances the player sequence, runs
+ * bot turns, and emits TURN_COMPLETED when the human turn begins.
+ */
 export class TurnProcessingPhase {
   /**
    * Routes incoming actions to the appropriate handler. Currently only

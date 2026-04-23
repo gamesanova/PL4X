@@ -2,6 +2,11 @@ import { EVENTS, I18N, UI, UI_SIZES, UI_VARIANTS } from '@constants';
 import { Button, Label, LabelValue, Panel } from '@ui/components';
 import { EntityModel } from '@engine/models';
 
+/**
+ * Bottom-right command panel. Renders tower purchase buttons, the end-turn
+ * button, and entity or tower info labels. Emits TOWER_SELECT and
+ * SELECTION_CANCEL events via the scene event bus.
+ */
 export class GameCommandView {
   #scene!: Phaser.Scene;
   #btnEndTurn!: Button;

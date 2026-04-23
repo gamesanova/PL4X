@@ -5,6 +5,10 @@ import RexBoardPlugin from 'phaser3-rex-plugins/plugins/board-plugin';
 import { BootScene, MenuScene, PlayScene } from '@scenes';
 import { UI_SIZES } from '@constants';
 
+/**
+ * Phaser.Game subclass that registers the RexUI and RexBoard plugins and
+ * bootstraps all scenes.
+ */
 export class Game extends Phaser.Game {
   constructor() {
     super({

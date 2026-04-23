@@ -17,6 +17,11 @@ export type ButtonStyles = {
   padding?: number;
 };
 
+/**
+ * Interactive container with a Panel background, optional text label or image,
+ * and pointer events for press animation. Supports disabled and unavailable
+ * states.
+ */
 export class Button extends Phaser.GameObjects.Container {
   #styles: ButtonStyles;
   #bg!: Phaser.GameObjects.Container;

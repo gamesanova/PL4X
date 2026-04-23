@@ -1,5 +1,9 @@
 import { ManagerRegistry } from '@engine/managers';
 
+/**
+ * Collects a snapshot from all managers and persists it. Supports async
+ * targets such as local storage or an external API.
+ */
 export class SaveGame {
 
   /**
