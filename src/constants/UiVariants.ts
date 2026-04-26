@@ -2,8 +2,6 @@ import { UI } from '@constants';
 import { lighten, darken } from '@utils';
 
 /**
- * UI_VARIANTS
- *
  * Style variants for UI components, derived from the tokens in UI.
  * Keys are named for their role rather than forced into generic PRIMARY/SECONDARY
  * labels. Values map directly to component props with no further translation needed.

@@ -1,6 +1,4 @@
 /**
- * EVENTS
- *
  * A global registry of all event string keys used across the game. Keeping them
  * here prevents naming collisions and gives a single place to see every event
  * the system emits at a glance.

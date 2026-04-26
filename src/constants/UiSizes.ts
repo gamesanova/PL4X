@@ -1,8 +1,6 @@
 import { ASSETS, SETTINGS, UI } from '@constants';
 
 /**
- * UI_SIZES
- *
  * Concrete size values for UI components, derived from the base tokens in UI.
  * Hard-coding unique one-off values here is fine. Keys are named to match
  * component props directly so they can be passed through without translation.

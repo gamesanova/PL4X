@@ -1,8 +1,6 @@
 import { BALANCE, I18N } from '@constants';
 
 /**
- * ENTITIES
- *
  * Definitions for every in-game entity. Covers stats, names, and any properties
  * unique to their type. This is the source of truth for what an entity is before
  * it becomes a live object in the engine.

@@ -1,6 +1,4 @@
 /**
- * ASSETS
- *
  * The registry of all game assets. Covers sprites, tilemaps, audio, and anything
  * else that needs to be loaded. Defining assets here keeps the preloader generic;
  * it can spin through this file automatically rather than needing manual updates.

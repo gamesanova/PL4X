@@ -2,8 +2,6 @@ import { I18N } from '@constants';
 import { UI } from './Ui';
 
 /**
- * SETTINGS
- *
  * Configuration options for a game session. Covers things like difficulty,
  * board size, and other player selections. These are the knobs a player
  * turns before a game begins, and the values the engine reads to initialize itself.

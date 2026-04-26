@@ -1,6 +1,4 @@
 /**
- * UI
- *
  * Master UI constants. All style tokens originate here and flow into UiSizes
  * and UiVariants. Very specific one-off values may live closer to where they
  * are used, but anything shared or reusable should be defined here first.

@@ -1,6 +1,4 @@
 /**
- * I18N
- *
  * All user-facing text in the game. Anything displayed to the player should be
  * sourced from here rather than hard-coded inline. Split into per-locale subkeys
  * if the project grows to support multiple languages.

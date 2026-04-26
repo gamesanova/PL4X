@@ -1,6 +1,4 @@
 /**
- * BALANCE
- *
  * The master config for all game balancing. Damage multipliers, costs, difficulty
  * scaling, and similar tuning values all live here so they can be adjusted from
  * one place without digging through game logic.
