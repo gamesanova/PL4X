@@ -16,13 +16,13 @@ export class BootScene extends Phaser.Scene {
    * loaded as a spritesheet using its configured dimensions.
    */
   preload() {
-    this.load.image('logo-plax-full', './assets/logo-plax-full.png');
-    this.load.image('logo-gamesanova', './assets/logo-gamesanova.png');
+    this.load.image('logo-plax-full', `./assets/logo-plax-full.png?v=${import.meta.env.VITE_BUILD_TIME}`);
+    this.load.image('logo-gamesanova', `./assets/logo-gamesanova.png?v=${import.meta.env.VITE_BUILD_TIME}`);
 
     Object.entries(ASSETS).forEach(([key, asset]) => {
       key = key.toLowerCase();
 
-      this.load.spritesheet(key, `./assets/${key}.png`, {
+      this.load.spritesheet(key, `./assets/${key}.png?v=${import.meta.env.VITE_BUILD_TIME}`, {
           frameWidth: asset.WIDTH,
           frameHeight: asset.HEIGHT,
       });
